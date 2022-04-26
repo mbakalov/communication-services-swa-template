@@ -13,8 +13,17 @@
     <h1>Azure Communication Services Static Web App with Token API</h1>
     <div id="user-details"></div>
     <div>
+      <!--
+        Standard login and logout routes provided by the Static Web Apps platform.
+        See https://docs.microsoft.com/azure/static-web-apps/authentication-authorization
+      -->
       <a id="aad-login" href="/.auth/login/aad">
         Login with Azure AD
+      </a>
+    </div>
+    <div>
+      <a id="github-login" href="/.auth/login/github">
+        Login with GitHub
       </a>
     </div>
     <div>
@@ -41,6 +50,9 @@
     const fetchToken = document.getElementById('fetch-token');
     const tokenField = document.getElementById('token-field');
 
+    // Get user details on page load. If they are authenticated - dump user information
+    // available to use from the Static Web Apps platform.
+    // See https://docs.microsoft.com/azure/static-web-apps/user-information?tabs=javascript
     const initLoginButtons = async () => {
       const response = await fetch('/.auth/me');
       const payload = await response.json();
@@ -55,6 +67,8 @@
 
     initLoginButtons();
 
+    // On button click try to fetch Azure Communication Services user and token details
+    // from our api. See TokenFunction.cs documentation to check how the api is implmented.
     fetchToken.addEventListener("click", async () => {
       const response = await fetch('/api/token');
 

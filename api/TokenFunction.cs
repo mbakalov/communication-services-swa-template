@@ -46,11 +46,12 @@ namespace API.Function
 
             var principal = GetPrincipal(req);
 
-            // If our app user is authenticated, use Azure Communication Services Identity SDK
-            // to create a Communication Services user and access token for them.
+            // Is our app user is authenticated?
             // See: https://docs.microsoft.com/azure/static-web-apps/authentication-authorization
             if (principal.IsInRole("authenticated"))
             {
+                // If yes - use Azure Communication Services Identity SDK
+                // to create a Communication Services user and access token for them.
                 var client = CreateIdentityClient();
 
                 var userAndTokenResponse = await client.CreateUserAndTokenAsync(
@@ -120,6 +121,5 @@ namespace API.Function
             public IEnumerable<string> UserRoles { get; set; }
         }
     }
-
     
 }
