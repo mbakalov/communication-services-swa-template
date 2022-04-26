@@ -5,13 +5,70 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="stylesheet" href="styles.css">
-  <title>Vanilla JavaScript App</title>
+  <title>Azure Communication Services Static Web App with Token API</title>
 </head>
 
 <body>
   <main>
-    <h1>Vanilla JavaScript App</h1>
+    <h1>Azure Communication Services Static Web App with Token API</h1>
+    <div id="user-details"></div>
+    <div>
+      <a id="aad-login" href="/.auth/login/aad">
+        Login with Azure AD
+      </a>
+    </div>
+    <div>
+      <a id="twitter-login" href="/.auth/login/twitter">
+        Login with Twitter
+      </a>
+    </div>
+    <div>
+      <a id="logout" href="/.auth/logout">
+        Logout
+      </a>
+    </div>
+    <div>
+      <button id="fetch-token">
+        Fetch communication token
+      </button>
+    </div>
+    <div id="token-field">
+
+    </div>
   </main>
+  <script>
+    const userDetails = document.getElementById('user-details');
+    const fetchToken = document.getElementById('fetch-token');
+    const tokenField = document.getElementById('token-field');
+
+    const initLoginButtons = async () => {
+      const response = await fetch('/.auth/me');
+      const payload = await response.json();
+      const { clientPrincipal } = payload;
+
+      if (clientPrincipal && clientPrincipal.userRoles.includes('authenticated')) {
+        userDetails.textContent = JSON.stringify(clientPrincipal);
+      } else {
+        userDetails.textContent = 'Anonymous user';
+      }
+    }
+
+    initLoginButtons();
+
+    fetchToken.addEventListener("click", async () => {
+      const response = await fetch('/api/token');
+
+      if (response.ok) {
+        const payload = await response.json();
+        console.log(payload);
+        tokenField.textContent = JSON.stringify(payload);
+      } else if (response.status === 401) {
+        tokenField.textContent = "Cannot fetch a token. Please login first";
+      } else {
+        tokenField.textContent = "Error fetching token";
+      }
+    });
+  </script>
 </body>
 
 </html>
